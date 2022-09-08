@@ -1,0 +1,52 @@
+{% extends 'base.html' %} #наследование от шаблона base.html
+
+{% block title %}
+COVIDMonitoring
+{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ url_for('static', filename = 'css/create_query.css') }}">
+
+<form method = "post">
+<div class="row align-items-md-stretch">
+    <div class="col-md-6">
+        <div class="h-100 p-5 text-white bg-dark rounded-3">
+          <h2>Создание запроса</h2>
+          <p>Чтобы создать новый запрос, укажите название и текст запроса</p>
+            <div class="form-floating" style="width: 80%">
+                {% if error and 'название' in error %}
+                    <div id="error_name" class="alert-prev alert-danger" style="text-align:center">{{ error }}</div>
+                {% endif %}
+                <input name="name" class="form-control" id="QueryName" placeholder="Пример названия: recoveredQuantity">
+                <label for="QueryName"></label>
+            </div>
+
+             <div class="form-floating"  style="width: 80%">
+              {% if error and 'текст' in error %}
+                 <div id="error_desciption" class="alert-prev alert-danger" style="text-align:center">{{ error }}</div>
+              {% endif %}
+              <input name="description" class="form-control" id="QueryText" placeholder="Пример текста: Получить число выздоровевших пациентов">
+              <label for="QueryText"></label>
+            </div>
+            <button class="btn-query btn-outline-light" type="submit" style="position: relative; left: 450px; top: 20px;">Сохранить запрос</button>
+         </div>
+    </div>
+
+     <div class="col-md-6">
+        <div class="h-100 p-5 bg-light border rounded-3">
+          <h4>Введите SQL-запрос</h4>
+            {% if error and 'неверен' in error %}
+                <div id="error_sql" class="alert-prev alert-danger" style="text-align:center">{{ error }}</div>
+            {% endif %}
+            <p><textarea name="sql_query" style="width: 100%"></textarea></p>
+            <p>Результат представляется в виде таблицы. Чтобы сделать ответ на ваш запрос понятным пользователям,
+                укажите в поле ниже название каждого столбца через знак ;</p>
+             <div class="form-floating"  style="width: 80%">
+              <input name="columns_name" class="form-control" id="QueryColumns" placeholder="Пример названий столбцов: ID; Пол; Возраст">
+              <label for="QueryColumns"></label>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+{% endblock %}

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="">
+
+    <!-- Bootstrap core CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body class="bg-light">
+<header class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+  <p class="h5 my-0 me-md-auto fw-normal">COVID-19</p>
+  <nav class="my-2 my-md-0 me-md-3">
+    <a class="p-2 text-dark" href="{{ url_for('.index') }}">Информация</a>
+    <a class="p-2 text-dark" href="{{ url_for('.database') }}">База данных</a>
+    <a class="p-2 text-dark" href="{{ url_for('.query') }}">Запросы</a>
+    {% if current_user.is_authenticated %}
+      <a class="p-2 text-dark" href="{{ url_for('.privateoffice_page') }}">Личный кабинет</a>
+      <a class="btn btn-outline-primary" href="{{ url_for('.logout') }}">Выйти</a>
+    {% endif %}
+  </nav>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename = 'css/main.css') }}">
+  <img class="absolute" src="/static/icons/eye.svg" alt="" width="72" height="57">
+</header>
+
+  <!-- <div class="container" style="position: relative; bottom: 350px"> -->
+
+  <link rel="stylesheet" href="{{ url_for('static', filename = 'css/privateoffice.css') }}">
+
+  <main>
+
+    <div class="container py-4 text-center" style="position: relative; left:0px; text-align:center">
+      <h2>Личный кабинет</h2>
+    </div>
+        <img src="/static/icons/person-circle.svg" width="102" height="102" style="position: relative; left:670px; bottom: 0px">
+
+   <div class="row g-5">
+
+      <div class="col-md-7 col-lg-8" style="position: relative; left: 300px; top: 50px">
+        <h4 class="mb-3" >Персональные данные</h4>
+
+        <form method="post">
+          <div class="row g-3">
+            <div class="XLK0Od">
+              <h3 class="WzaSad">Имя</h3>
+              <div class="xoXYwe">
+                <div class="bJCr1d">{{ name }}</div>
+              </div>
+              <hr class="container my-4" style="position: relative; left: 15px; top: 0px">
+
+              <h3 class="WzaSad">Фамилия</h3>
+              <div class="xoXYwe">
+                <div class="bJCr1d">{{ lastname }}</div>
+              </div>
+              <hr class="container my-4" style="position: relative; left: 15px; top: 0px">
+
+              <h3 class="WzaSad">Дата рождения</h3>
+              <div class="xoXYwe">
+                <div class="bJCr1d" style="width: 150px" >{{ day }} {{ month }} {{ year }} г.</div>
+              </div>
+              <hr class="container my-4" style="position: relative; left: 15px; top: 0px">
+
+              <h3 class="WzaSad">Пол</h3>
+              <div class="xoXYwe">
+                <div class="bJCr1d">{{ gender }}</div>
+              </div>
+              <hr class="container my-4" style="position: relative; left: 15px; top: 0px">
+
+              <h3 class="WzaSad">Адрес проживания</h3>
+              <div class="xoXYwe">
+                <div class="bJCr1d" style="width: 200px">{{ address }}</div>
+              </div>
+              <hr class="container my-4" style="position: relative; left: 15px; top: 0px">
+
+              <h3 class="WzaSad">Состояние здоровья</h3>
+              <div class="xoXYwe">
+                {% if health_status == 0 %}
+                  <div class="bJCr1d" style="color: #198754">Здоров</div>
+                  <img src="/static/icons/emoji-smile.svg" width="35" height="35" style="position: relative; left:700px; bottom: 0px">
+                {% endif %}
+
+                {% if health_status == 1 %}
+                  <div class="bJCr1d" style="color: #dc3545">Болен</div>
+                  <img src="/static/icons/emoji-frown.svg" width="35" height="35" style="position: relative; left:700px; bottom: 0px">
+                {% endif %}
+
+                <label for="popupCheckboxOne" class="popup-shower WzaSad" style="position: relative; left:730px; top: 0px; color: #808080">Изменить</label>
+              </div>
+
+                 <div class="popup-wrapper">
+                    <input type="checkbox" class="popup-checkbox" id="popupCheckboxOne">
+                    <div class="popup">
+                      <div class="popup-content">
+                        <label for="popupCheckboxOne" class="popup-closer">&#215;</label>
+                        Выберите новый статус здоровья
+                        <div class="my-3">
+                          <div class="form-check">
+                            <input id="infected" type="radio" name="HealthStatus" value="1" class="form-check-input" checked="" required="">
+                            <label class="form-check-label" for="infected">Болен COVID-19</label>
+                          </div>
+                          <div class="form-check col-6">
+                            <input id="healthy" type="radio" name="HealthStatus" value="0" class="form-check-input" required="">
+                            <label class="form-check-label" for="healthy">Здоров</label>
+                          </div>
+                           <button class="w-100 btn btn-primary btn-lg" style="position: relative; left: 0px; top: 20px; height: 30px; font-size: 11px; text-align: center;" type="submit">Сохранить изменения</button>
+                        </div>
+                      </div>
+                    </div>
+                 </div>
+
+                <!--<a class="WzaSad" style="position: relative; left:730px; top: 0px" href="#okno">Изменить</a> -->
+
+              <hr class="container my-4" style="position: relative; left: 15px; top: 0px">
+            </div>
+          </div>
+          <h4 class="mb-3" style="position: relative; left:125px; top: 15px">По вашему адресу количество заболевших COVID-19 составляет:</h4>
+          {% if percentage <= 35 %}
+          <h4 class="mb-3" style="position: relative; left:395px; top: 15px; color: #6c757d">{{ percentage }} %</h4>
+          {% endif %}
+
+          {% if percentage > 35 and percentage <= 65 %}
+          <h4 class="mb-3" style="position: relative; left:395px; top: 15px; color: #ffc107">{{ percentage }} %</h4>
+          {% endif %}
+
+          {% if percentage > 65 %}
+          <h4 class="mb-3" style="position: relative; left:395px; top: 15px; color: #dc3545;">{{ percentage }} %</h4>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+  </main>
+<!--  </div> -->
+
+  <footer class="my-5 pt-5 text-muted text-center text-small">
+    <p class="mb-1">© 2020–2021 COVIDMonitoring</p>
+  </footer>
+</body>
+</html>

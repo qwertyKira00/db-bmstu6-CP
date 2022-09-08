@@ -1,0 +1,27 @@
+{% extends 'base_sign.html' %} #наследование от шаблона base_sign.html
+
+{% block body %}
+
+<body class="text-center">
+
+<main class="form-signin">
+    {% if error %}
+    <div id="error" class="alert-prev alert-danger">{{ error }}</div>
+    {% endif %}
+    <!--<div class="alert alert-danger" style="text-align:center">Login failed, please try again</div> -->
+    <!--Метод передачи данных из формы на сервер - post-->
+  <form method = "post">
+    <img class="mb-4" src="/static/icons/eye.svg" alt="" width="72" height="57">
+    <h1 class="h4 mb-3 fw-normal">Проверка электронной почты</h1>
+
+
+    <div class="form-floating">
+        Введите код, отправленный на <strong>{{ email_address }}</strong>
+      <input type="code" name="code" class="form-control" id="floatingInput" placeholder="">
+      <label for="floatingInput" style="color: #6c757d;"></label>
+    </div>
+    <button class="w-30 btn btn-lg btn-primary" style="position: relative; left: 110px; top: 10px; font-weight: 250; line-height: 1.1; padding: .400rem .75rem;" type="submit">Далее</button>
+    <p class="mt-5 mb-3 text-muted">© 2020–2021 COVIDMonitoring</p>
+  </form>
+</main></body>
+{% endblock %}

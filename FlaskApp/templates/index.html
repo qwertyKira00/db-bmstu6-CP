@@ -1,0 +1,50 @@
+{% extends 'base.html' %} #наследование от шаблона base.html
+
+{% block title %}
+COVIDMonitoring
+{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ url_for('static', filename = 'css/index.css') }}">
+
+
+<div class="container">
+    <h1>COVIDMonitoring</h1>
+    <p class="lead">Следите за ситуацией в мире и вокруг себя</p>
+<div class="row align-items-md-stretch">
+    <div class="card-i card-cover-i h-100-i overflow-hidden-i text-white bg-dark rounded-5-i shadow-lg-i"
+         style="width: 36%; background-image: url('/static/img/earth.jpg'); background-size: 410px 410px;">
+          <div class="d-flex-i flex-column-i h-100-i p-5-i pb-3-i text-white text-shadow-1">
+               <small>Info</small>
+            <h2 class="pt-5-i mt-5-i mb-4-i display-6-i lh-1-i fw-bold-i dropdown">COVID-19, Мировая пандемия
+            <div class="dropdown-content">
+                  <p class="lead rounded-i">COVID-19 (аббревиатура от англ. COronaVIrus Disease 2019 — коронавирусная инфекция 2019 года, рус. <strong>ковид</strong>),
+                      ранее <strong>коронавирусная инфекция 2019-nCoV</strong> (от временного названия вируса в начале пандемии) — потенциально тяжёлая
+                      острая респираторная инфекция, вызываемая коронавирусом SARS-CoV-2 (2019-nCoV)</p>
+              </div>
+            </h2>
+          </div>
+    </div>
+
+    <div class="col-md-6">
+        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small" style="width: 140%;">
+            <h3>Вы можете</h3>
+            <li>
+                <p class="lead rounded-i">Получить информацию о течении коронавирусной инфекции из базы данных, охватывающей
+                случаи заражения по всему миру</p>
+            </li>
+            <h3>Зарегистрируйтесь, чтобы</h3>
+            <li>
+                <p class="lead rounded-i">Анонимно фиксировать свое состояние здоровья в личном кабинете</p>
+            </li>
+            <li>
+                <p class="lead rounded-i">Видеть процентное соотношение заболевших COVID-19 на Вашей улице</p>
+            </li>
+            <li>
+                <p class="lead rounded-i">Получить желаемую информацию из базы данных с помощью запросов к ней</p>
+            </li>
+         </ul>
+    </div>
+</div>
+</div>
+{% endblock %}

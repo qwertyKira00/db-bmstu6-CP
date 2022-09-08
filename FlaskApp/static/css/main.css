@@ -1,0 +1,20 @@
+.absolute {
+    position: absolute;
+    top: 10px;
+    right: 50px;
+}
+
+.authorization-alert-success {
+    color: #0f5132;
+    background-color: #d1e7dd;
+    border-color:#badbcc
+}
+
+.authorization-alert {
+    position: relative;
+    text-align: center;
+    padding: 1rem 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius:.50rem
+}

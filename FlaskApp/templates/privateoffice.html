@@ -1,0 +1,205 @@
+{% extends 'base_sign.html' %} #наследование от шаблона base_sign.html
+
+{% block body %}
+
+<body class="bg-light">
+<link href="form-validation.css" rel="stylesheet">
+
+<div class="container">
+  <main>
+    <div class="py-4 text-center" style="padding-top: 25rem !important;">
+      <img class="mb-4" src="/static/icons/eye.svg" alt="" width="72" height="57">
+      <h2>Создание личного кабинета</h2>
+      <p class="lead">Создайте свой личный кабинет, чтобы отслеживать ситуацию с COVID-19 в своем районе и фиксировать свое состояние здоровья. Ваши данные анонимны, и никто из других пользователей не имеет к ним доступ.</p>
+    </div>
+
+    {% if error and "ошбика сервера" in error %}
+      <div id="error_add" class="alert-prev alert-danger" style="text-align:center">{{ error }}</div>
+    {% endif %}
+
+    <div class="row g-5">
+
+      <div class="col-md-7 col-lg-8" style="position: relative; left: 220px;">
+        <h4 class="mb-3">Персональные данные</h4>
+        {% if error and "имя" in error %}
+          <div id="error_name" class="alert-prev alert-danger" style="width:355px">{{ error }}</div>
+        {% endif %}
+
+        {% if error and "фамилию" in error %}
+          <div id="error_lastname" class="alert-prev alert-danger" style="position: relative; left: 370px; width:355px">{{ error }}</div>
+        {% endif %}
+        <form class="needs-validation" method = "post" novalidate="">
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label for="firstName" class="form-label">Имя</label>
+              <input type="text" class="form-control" id="firstName" name="firstName" placeholder="" value="" required="">
+              <div class="invalid-feedback">
+                Введите корректное имя пользователя
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <label for="lastName" class="form-label">Фамилия</label>
+              <input type="text" class="form-control" id="lastName" name="lastName" placeholder="" value="" required="">
+              <div class="invalid-feedback">
+                Введите корректную фамилию пользователя
+              </div>
+            </div>
+
+            {% if error and "дату" in error %}
+            <div id="error_date" class="alert-prev alert-danger" style="text-align:center">{{ error }}</div>
+            {% endif %}
+            <h4 class="my-4 mb-3">Дата рождения</h4>
+            <div class="col-md-5" style="width: 180px;">
+              <label for="Day" class="form-label">День</label>
+              <input type="date" class="form-control" id="Day" name="Day" placeholder="" value="" required="">
+
+              <div class="invalid-feedback">
+                Пожалуйста, введите число
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label for="Month" class="form-label">Месяц</label>
+              <select class="form-select" id="Month" name="Month" required="">
+                <option value="">Выберите месяц...</option>
+                  <option>Январь</option>
+                  <option>Февраль</option>
+                  <option>Март</option>
+                  <option>Апрель</option>
+                  <option>Май</option>
+                  <option>Июнь</option>
+                  <option>Июль</option>
+                  <option>Август</option>
+                  <option>Сентябрь</option>
+                  <option>Октябрь</option>
+                  <option>Ноябрь</option>
+                  <option>Декабрь</option>
+              </select>
+              <div class="invalid-feedback">
+                Пожалуйста, выберите месяц из предложенного списка.
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <label for="Year" class="form-label">Год</label>
+              <input type="text" class="form-control" id="Year" name="Year" placeholder="" value="" required="">
+
+              <div class="invalid-feedback">
+                Пожалуйста, введите число
+              </div>
+            </div>
+
+
+
+             <h4 class="my-4 mb-3">Пол</h4>
+            <div class="form-check col-sm-4">
+              <input id="female" type="radio" name="Gender" value="женский" class="form-check-input" checked="" required="">
+              <label class="form-check-label" for="female">женский</label>
+            </div>
+            <div class="form-check col-sm-6">
+              <input id="male" type="radio" name="Gender" value="мужской" class="form-check-input" required="">
+              <label class="form-check-label" for="male">мужской</label>
+            </div>
+
+
+            <div class="col-md-5">
+              <h4 class="my-4 mb-3">Адрес</h4>
+              {% if error and "улицу" in error %}
+                <div id="error_address" class="alert-prev alert-danger" style="width:355px">{{ error }}</div>
+              {% endif %}
+              <select class="form-select" id="address" name="address" required="">
+                <option value="">Выберите название улицы...</option>
+                  <option>Автозаводская улица</option>
+                  <option>Бауманская 2-я, улица</option>
+                  <option>Вознесенский переулок</option>
+                  <option>Головинское шоссе</option>
+                  <option>Давыдковская улица</option>
+                  <option>Ейская улица</option>
+                  <option>Железногорский проезд</option>
+                  <option>Загородное шоссе</option>
+                  <option>Измайловская улица</option>
+                  <option>Кабельный 1-й, проезд</option>
+                  <option>Ладожская улица</option>
+                  <option>Магистральная 5-я, улица</option>
+                  <option>Набережная улица</option>
+                  <option>Окская улица</option>
+                  <option>Павелецкая площадь</option>
+                  <option>Рождественский бульвар</option>
+                  <option>Садовая улица</option>
+                  <option>Таганская площадь</option>
+                  <option>Угловой переулок</option>
+                  <option>Фабричная улица</option>
+                  <option>Хорошёвская 3-я, улица</option>
+                  <option>Чагинская улица</option>
+                  <option>Шатурская улица</option>
+                  <option>Щибровская улица</option>
+                  <option>Элеваторная улица</option>
+                  <option>Югорский проезд</option>
+                  <option>Яблоневая аллея</option>
+              </select>
+              <div class="invalid-feedback">
+                Пожалуйста, выберите улицу из предложенного списка.
+              </div>
+            </div>
+
+
+          <!--<hr class="my-4">Состояние здоровья
+
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="same-address">
+            <label class="form-check-label" for="same-address">Болен Covid-19</label>
+          </div>
+
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="save-info">
+            <label class="form-check-label" for="save-info">Здоров</label>
+          </div>
+
+          <hr class="my-4"> -->
+
+            <span></span>
+            <h4 class="my-7 mb-3">Состояние здоровья</h4>
+            <div class="form-check col-sm-4">
+              <input id="infected" type="radio" name="HealthStatus" value="1" class="form-check-input" checked="" required="">
+              <label class="form-check-label" for="infected">Болен COVID-19</label>
+            </div>
+            <div class="form-check col-sm-6">
+              <input id="healthy" type="radio" name="HealthStatus" value="0" class="form-check-input" required="">
+              <label class="form-check-label" for="healthy">Здоров</label>
+            </div>
+
+            <span></span>
+            <h4 class="my-7 mb-3">Тип аккаунта</h4>
+            <div class="form-check col-sm-4">
+              <input id="user" type="radio" name="Role" value="2" class="form-check-input" checked="" required="">
+              <label class="form-check-label" for="infected">Пользователь</label>
+            </div>
+            <div class="form-check col-sm-6">
+              <input id="specialist" type="radio" name="Role" value="1" class="form-check-input" required="">
+              <label class="form-check-label" for="healthy">Специалист</label>
+            </div>
+
+
+          <hr class="container my-4" style="position: relative; left: 0px; width:96%">
+
+          <button class="w-100 btn btn-primary btn-lg" style="position: relative; left: 0px;" type="submit">Сохранить</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="my-5 pt-5 text-muted text-center text-small">
+    <p class="mb-1">© 2020–2021 COVIDMonitoring</p>
+  </footer>
+</div>
+
+
+    <script src="/docs/5.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+      <script src="form-validation.js"></script>
+
+
+</body>
+{% endblock %}

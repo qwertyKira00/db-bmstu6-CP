@@ -1,0 +1,443 @@
+{% extends 'base.html' %} #наследование от шаблона base.html
+
+{% block title %}
+COVIDMonitoring
+{% endblock %}
+
+
+{% block body %}
+<link rel="stylesheet" href="{{ url_for('static', filename = 'css/query.css') }}">
+
+<div class="container">
+    <h1>Запросы к базе данных</h1>
+
+    {% if current_user.has_role('specialist') %}
+        <a href="{{ url_for('.create_query') }}" class="icon-link">
+            Создать запрос
+        <img class="bi" src="/static/icons/process.svg"></img>
+        </a>
+    {% endif %}
+
+     <form method = "post" id = "get-query-result">
+         <div class="list-group list-group-checkable list-group-flush border-bottom-list scrollarea layer">
+       <!-- <ul class="list-unstyled text-small"> -->
+            <input class="list-group-item-check list-group-item-action active py-3 lh-tight" type="radio" name="listGroupCheckableRadios" id="FirstQuery" value="quantityByStatus" checked="">
+            <label class="list-group-item py-3" for="FirstQuery">
+                Сгруппировать по статусу состояния здоровья
+                <span class="d-block small-admin opacity-50">Admin</span>
+            </label>
+
+            <input class="list-group-item-check" type="radio" name="listGroupCheckableRadios" id="SecondQuery" value="deathQuantityByCountry">
+            <label class="list-group-item py-3" for="SecondQuery">
+                Количество умерших пациентов в каждой стране
+                <span class="d-block small-admin opacity-50">Admin</span>
+            </label>
+
+            <input class="list-group-item-check" type="radio" name="listGroupCheckableRadios" id="ThirdQuery" value="recQuantityByCountry">
+            <label class="list-group-item py-3" for="ThirdQuery">
+                Количество выздоровевших пациентов в каждой стране
+                <span class="d-block small-admin opacity-50">Admin</span>
+            </label>
+
+            <input class="list-group-item-check" type="radio" name="listGroupCheckableRadios" id="FourthQuery" value="avgAgeByCountry">
+            <label class="list-group-item py-3" for="FourthQuery">
+                Средний возраст смерти для всех стран
+                <span class="d-block small-admin opacity-50">Admin</span>
+            </label>
+
+            <input class="list-group-item-check" type="radio" name="listGroupCheckableRadios" id="FifthQuery" value="topSymptom">
+            <label class="list-group-item py-3" for="FifthQuery">
+                5 самых распространенных симптомов
+                <span class="d-block small-admin opacity-50">Admin</span>
+            </label>
+
+
+            <input class="list-group-item-check" type="radio" name="listGroupCheckableRadios" id="SixthQuery" value="maxExpStart">
+            <label class="list-group-item py-3" for="SixthQuery">
+                Получить дату, когда госпитализировали наибольшее число людей
+                <span class="d-block small-admin opacity-50">Admin</span>
+            </label>
+
+
+            <input class="list-group-item-check" type="radio" name="listGroupCheckableRadios" id="SeventhQuery" value="deathSymptom">
+            <label class="list-group-item py-3" for="SeventhQuery">
+                Получить название симптома, который чаще всего наблюдался у пациентов с летальным исходом
+                <span class="d-block small-admin opacity-50">Admin</span>
+            </label>
+
+
+             {% if query_list %}
+                {% for query in query_list %}
+                    <input class="list-group-item-check list-group-item-action active py-3 lh-tight" type="radio" name="listGroupCheckableRadios" id="{{ query.name }}" value="{{ query.name }}" checked="">
+                    <label class="list-group-item py-3" for="{{ query.name }}">
+                        {{ query.description }}
+                        <span class="d-block small-specialist opacity-50">Specialist</span>
+                    </label>
+                {% endfor %}
+             {% endif %}
+
+         </div>
+
+         <button class="btn btn-primary btn-lg" style="position: relative; left: 550px; bottom: 610px; width: 100px; height: 80px; border-radius: 50%; border: 1px solid rgba(0,0,0,0); font-size: 12pt; background-color: #fff;"
+                 name="submit_button" value="PostData" type="submit" onclick="clearForm()">
+             <img src="/static/icons/process.svg" alt="" width="72" height="57">
+         </button>
+
+    <!-- Font Awesome Icon Library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    {% if query_number == 1 %}
+    <div class="table-responsive" style="position: relative; left: 700px; bottom: 670px; width: 30%;">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Статус здоровья</th>
+              <th scope="col">Количество человек</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ res[0][0] }}</td>
+              <td>{{ res[0][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[1][0] }}</td>
+              <td>{{ res[1][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[2][0] }}</td>
+              <td>{{ res[2][1] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+
+
+    {% if query_number == 2 %}
+    <div class="table-responsive scrollarea layer" style="position: relative; left: 700px; bottom: 670px; width: 23%;">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Страна</th>
+              <th scope="col">Количество смертей</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in res %}
+            <tr>
+              <td>{{ row[0] }}</td>
+              <td>{{ row[1] }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    <button class="btn-drop-1" style="position: relative; left: 1000px; bottom: 1270px; width: 100px; background-color: #fff;  color: black;"
+    name="submit_button" id = "sortButton1" value="Sort" type="submit">
+        Сортировать</button>
+    <div class="dropdown" style = "position: relative; left: 1000px; bottom: 1270px; background-color: #fff;">
+      <button disabled class="btn-drop" style="solid navy;">
+          <i class="fa fa-caret-down"></i>
+      </button>
+      <div class="dropdown-content">
+        <input class="list-group-item-check" type="radio" name="listGroupCheckableRadios" id="sort1" value="asc1">
+        <label class="" for="sort1" style="height: 20px; border: 1px solid rgba(0,0,0,0); border-radius: .25rem; text-align: bottom;">По возрастанию</label>
+
+        <input class="list-group-item-check" type="radio" name="listGroupCheckableRadios" id="sort2" value="desc1">
+        <label class="" for="sort2" style="height: 20px; border: 1px solid rgba(0,0,0,0); border-radius: .25rem; text-align: bottom;">По убыванию</label>
+      </div>
+    </div>
+    {% endif %}
+
+
+    {% if query_number == 3 %}
+    <div class="table-responsive scrollarea layer" style="position: relative; left: 700px; bottom: 670px; width: 23%;">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Страна</th>
+              <th scope="col">Количество выздоровевших</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in res %}
+            <tr>
+              <td>{{ row[0] }}</td>
+              <td>{{ row[1] }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    <button class="btn-drop-1" style="position: relative; left: 1000px; bottom: 1270px; width: 100px; background-color: #fff;  color: black;"
+    name="submit_button" id = "sortButton2" value="Sort" type="submit">
+        Сортировать</button>
+    <div class="dropdown" style = "position: relative; left: 1000px; bottom: 1270px; background-color: #fff;">
+      <button disabled class="btn-drop" style="solid navy;">
+          <i class="fa fa-caret-down"></i>
+      </button>
+      <div class="dropdown-content">
+        <input class="list-group-item-check" type="radio" name="listGroupCheckableRadios" id="sort3" value="asc2">
+        <label class="" for="sort3" style="height: 20px; border: 1px solid rgba(0,0,0,0); border-radius: .25rem; text-align: bottom;">По возрастанию</label>
+
+        <input class="list-group-item-check" type="radio" name="listGroupCheckableRadios" id="sort4" value="desc2">
+        <label class="" for="sort4" style="height: 20px; border: 1px solid rgba(0,0,0,0); border-radius: .25rem; text-align: bottom;">По убыванию</label>
+      </div>
+    </div>
+    {% endif %}
+
+
+    {% if query_number == 4 %}
+    <div class="table-responsive scrollarea layer" style="position: relative; left: 700px; bottom: 670px; width: 23%;">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Страна</th>
+              <th scope="col">Средний возраст смерти</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ res[0][0] }}</td>
+              <td>{{ res[0][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[1][0] }}</td>
+              <td>{{ res[1][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[2][0] }}</td>
+              <td>{{ res[2][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[3][0] }}</td>
+              <td>{{ res[3][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[4][0] }}</td>
+              <td>{{ res[4][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[5][0] }}</td>
+              <td>{{ res[5][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[6][0] }}</td>
+              <td>{{ res[6][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[7][0] }}</td>
+              <td>{{ res[7][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[8][0] }}</td>
+              <td>{{ res[8][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[9][0] }}</td>
+              <td>{{ res[9][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[10][0] }}</td>
+              <td>{{ res[10][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[11][0] }}</td>
+              <td>{{ res[11][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[12][0] }}</td>
+              <td>{{ res[12][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[13][0] }}</td>
+              <td>{{ res[13][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[14][0] }}</td>
+              <td>{{ res[14][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[15][0] }}</td>
+              <td>{{ res[15][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[16][0] }}</td>
+              <td>{{ res[16][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[17][0] }}</td>
+              <td>{{ res[17][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[18][0] }}</td>
+              <td>{{ res[18][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[19][0] }}</td>
+              <td>{{ res[19][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[20][0] }}</td>
+              <td>{{ res[20][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[21][0] }}</td>
+              <td>{{ res[21][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[22][0] }}</td>
+              <td>{{ res[22][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[23][0] }}</td>
+              <td>{{ res[23][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[24][0] }}</td>
+              <td>{{ res[24][1] }}</td>
+            </tr>
+            <tr>
+              <td>{{ res[25][0] }}</td>
+              <td>{{ res[25][1] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    <button class="btn-drop-1" style="position: relative; left: 1000px; bottom: 1270px; width: 100px; background-color: #fff;  color: black;"
+    name="submit_button" id = "sortButton3" value="Sort" type="submit">
+        Сортировать</button>
+    <div class="dropdown" style = "position: relative; left: 1000px; bottom: 1270px; background-color: #fff;">
+      <button disabled class="btn-drop" style="solid navy;">
+          <i class="fa fa-caret-down"></i>
+      </button>
+      <div class="dropdown-content">
+        <input class="list-group-item-check" type="radio" name="listGroupCheckableRadios" id="sort5" value="asc3">
+        <label class="" for="sort5" style="height: 20px; border: 1px solid rgba(0,0,0,0); border-radius: .25rem; text-align: bottom;">По возрастанию</label>
+
+        <input class="list-group-item-check" type="radio" name="listGroupCheckableRadios" id="sort6" value="desc3">
+        <label class="" for="sort6" style="height: 20px; border: 1px solid rgba(0,0,0,0); border-radius: .25rem; text-align: bottom;">По убыванию</label>
+      </div>
+    </div>
+    {% endif %}
+
+
+    {% if query_number == 5 %}
+    <div class="table-responsive" style="position: relative; left: 700px; bottom: 670px; width: 20%;">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Название симптома</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ res[0][0] }}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" color="#FF0000" class="bi bi-arrow-down-circle-fill" style="position: absolute; left: 190px; top: 50px;" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
+                  </svg>
+              </td>
+            </tr>
+            <tr>
+              <td>{{ res[1][0] }}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" color="#FF6347" class="bi bi-arrow-down-circle-fill" style="position: absolute; left: 190px; top: 90px;" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
+                  </svg>
+              </td>
+            </tr>
+            <tr>
+              <td>{{ res[2][0] }}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" color="#B22222" class="bi bi-arrow-down-circle-fill" style="position: absolute; left: 190px; top: 133px;" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
+                  </svg>
+              </td>
+            </tr>
+            <tr>
+              <td>{{ res[3][0] }}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" color="#FFD700" class="bi bi-arrow-down-circle-fill" style="position: absolute; left: 190px; top: 173px;" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
+                  </svg>
+              </td>
+            </tr>
+            <tr>
+              <td>{{ res[4][0] }}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" color="#BDB76B" class="bi bi-arrow-down-circle-fill" style="position: absolute; left: 190px; top: 213px;" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
+                  </svg>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+
+
+     {% if query_number == 6 %}
+    <div class="table-responsive" style="position: relative; left: 700px; bottom: 670px; width: 30%;">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Дата (мм/дд/гг)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ res[0] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+
+
+    {% if query_number == 7 %}
+    <div class="table-responsive" style="position: relative; left: 700px; bottom: 670px; width: 30%;">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Название симптома</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ res }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+
+
+    {% if query_number == 8 %}
+       <div class="table-responsive scrollarea layer" style="position: relative; left: 700px; bottom: 670px; width: 23%;">
+        <table class="table table-striped table-sm">
+          {% if columns_name %}
+            <thead>
+                <tr>
+                  {% for name in columns_name %}
+                    <th scope="col">{{ name }}</th>
+                  {% endfor %}
+                </tr>
+            </thead>
+          {% endif %}
+          <tbody>
+            {% for row in res %}
+            <tr>
+              {% for i in row %}
+                <td>{{ i }}</td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+
+    <script src="/docs/5.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+
+     </form>
+
+</div>
+{% endblock %}
